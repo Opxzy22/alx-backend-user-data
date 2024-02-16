@@ -15,8 +15,8 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
 
 
-if getenv('AUTH_TYPE') == 'basic_auth':
-    from api.v1.auth.basic_auth import BasicAuth 
+if getenv("AUTH_TYPE") == "basic_auth":
+    from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
 else:
     from api.v1.auth.auth import Auth
@@ -24,18 +24,20 @@ else:
 
 
 @app.before_request
-def before_request() -> None:
-    """ filtering request before processing
+def handle_request() -> None:
+    """
+    filter the request first before sending it.
     """
     if auth:
-        excluded_path = ['/api/v1/status/', '/api/v1/unauthorized/',
-            '/api/v1/forbidden/']
+        exclu = ['/api/v1/status/', '/api/v1/unauthorized/',
+                 '/api/v1/forbidden/']
 
-        if auth.require_auth(request.path, excluded_path):
+        if auth.require_auth(request.path, exclu):
             if not auth.authorization_header(request):
                 abort(401)
             if not auth.current_user(request):
-                    abort(403)
+                abort(403)
+
 
 @app.errorhandler(404)
 def not_found(error) -> str:
@@ -43,15 +45,32 @@ def not_found(error) -> str:
     """
     return jsonify({"error": "Not found"}), 404
 
+
 @app.errorhandler(401)
-def auauthorized(error) -> str:
-    """ not authorized handler
+def not_auth(error) -> str:
+    """
+    Error returned when a user is not authorized to access the page
+
+    Args:
+        error (Any): error paramenter_
+
+    Returns:
+        str: jsonify string of the error message
     """
     return jsonify({"error": "Unauthorized"}), 401
 
+
 @app.errorhandler(403)
 def forbidden(error) -> str:
-    """ forbidden error handler
+    """
+    Error returned with forbidden message when a user is not allowed
+    to access the data.
+
+    Args:
+        error (Any): Error parameter
+
+    Returns:
+        str: jsonify string of the error message
     """
     return jsonify({"error": "Forbidden"}), 403
 

@@ -3,6 +3,7 @@
     api authentication
 """
 from flask import request
+from typing import List, TypeVar
 
 
 class Auth:
@@ -13,13 +14,13 @@ class Auth:
         if path not in excluded_paths:
             return True
 
-        elif if path is None:
+        elif path is None:
             return True
 
         elif excluded_paths is None or len(excluded_paths) == 0:
             return True
 
-        elif if path is in excluded_paths:
+        elif path in excluded_paths:
             return False
 
         for excluded_path in exclude_paths:

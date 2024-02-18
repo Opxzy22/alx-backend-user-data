@@ -17,7 +17,8 @@ def filter_datum(fields: List[str], redaction: str,
     """
     for field in fields:
         message = re.sub('{}=.*?{}'.format(field, separator),
-                          '{}={}{}'.format(field, redaction, separator), message)
+                         '{}={}{}'.format(field, redaction, separator),
+                         message)
 
     return message
 
@@ -40,10 +41,10 @@ class RedactingFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Function to filter values in incoming log records"""
-        
+
         return filter_datum(self.fields, self.REDACTION,
-                                  super(RedactingFormatter, self).format(record),
-                                    self.SEPARATOR)
+                            super(RedactingFormatter,
+                                  self).format(record), self.SEPARATOR)
 
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')

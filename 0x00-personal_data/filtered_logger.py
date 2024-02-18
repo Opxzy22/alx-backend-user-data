@@ -32,7 +32,7 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
     fields = ['']
 
-    def __init__(self, fields):
+    def __init__(self, fields: List[str] = None):
         """
             initialises self
         """
@@ -40,7 +40,7 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        """Function to filter values in incoming log records"""
+        """method to filter values in incoming log records"""
 
         return filter_datum(self.fields, self.REDACTION,
                             super(RedactingFormatter,

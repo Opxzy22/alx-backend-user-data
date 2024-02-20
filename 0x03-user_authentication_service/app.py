@@ -4,13 +4,13 @@ from auth import Auth
 app = Flask(__name__)
 AUTH  = Auth()
 
-app.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     """ a get method that return a jsonify string
     """
     return jsonify({"message": "Bienvenue"})
 
-app.route('/users', methods=['POST'])
+@app.route('/users', methods=['POST'])
 def users():
     email = request.form.get('email')
     password = request.form.get('password')

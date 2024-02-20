@@ -11,6 +11,8 @@ def index():
     return jsonify({"message": "Bienvenue"})
 
 app.route('/users', methods=['POST'])
+""" a post method to register users
+"""
 def users():
     email = request.form.get('email')
     password = request.form.get('password')

@@ -4,7 +4,7 @@ from auth import Auth
 app = Flask(__name__)
 AUTH  = Auth()
 
-app.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     """ a get method that return a jsonify string
     """

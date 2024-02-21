@@ -2,6 +2,7 @@ import bcrypt
 from db import DB
 from user import User
 import uuid
+from typing import Union
 
 def _generate_uuid() -> str:
     """
@@ -73,4 +74,32 @@ class Auth:
                 return session_id
         except:
             return None
+        
+    def get_user_from_session_id(self, session_id) -> Union[User, None]:
+        """
+        get the user from the provided session id
 
+        Args:
+            session_id (str): string
+
+        Returns:
+            User: current user object
+        """
+        if session_id is None:
+            return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except Exception:
+            return None
+    def destroy_session(self, user_id: int) -> None:
+        """ destroy a user session_id
+        """
+        try:
+            user = self._db.find_user_by(id=user_id)
+            if user is not None:
+                user.session_id = None
+                self._db.update_user(user_id, user.session_id)
+                return None
+        except Exception:
+            return None

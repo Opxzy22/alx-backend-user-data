@@ -30,11 +30,11 @@ def login():
     email = request.form.get('email')
     password = request.form.get('password')
     try:
-        if AUTH.valid_login(email, password)
-        session_id = AUTH.create_session(email)
-        response = make_response(jsonify({"email": email, "message": "logged in"}))
-        response.set_cookie('session_id', session_id)
-        return response
+        if AUTH.valid_login(email, password):
+            session_id = AUTH.create_session(email)
+            response = make_response(jsonify({"email": email, "message": "logged in"}))
+            response.set_cookie('session_id', session_id)
+            return response
     except Exception:
         abort(401)
 

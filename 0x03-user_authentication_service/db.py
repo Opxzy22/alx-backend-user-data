@@ -30,14 +30,14 @@ class DB:
             DBSession = sessionmaker(bind=self._engine)
             self.__session = DBSession()
         return self.__session
-    
+
     def add_user(self, email, hashed_password):
         user = User(email=email, hashed_password=hashed_password)
         self._session.add(user)
         self._session.commit()
 
         return user
-        
+
     def find_user_by(self, **kwargs):
         """a method that query the database
             Kwargs: keyword argument to be queried in the DB
@@ -51,9 +51,9 @@ class DB:
                 raise NoResultFound('no result found')
         except InvalidRequestError:
             raise InvalidRequestError('invalid')
-        
+
         return user
-    
+
     def update_user(self, user_id: int, **kwargs) -> None:
         """
             a method that update a user

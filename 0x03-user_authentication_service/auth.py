@@ -5,7 +5,7 @@ import uuid
 from typing import Union
 
 
-def _hash_password(self, password: str) -> bytes:
+def _hash_password(password: str) -> bytes:
     """
     hash a password using bcrypt
 

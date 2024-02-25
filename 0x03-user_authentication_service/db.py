@@ -2,11 +2,10 @@
 """DB module
 """
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
-from sqlalchemy.exc import NoResultFound, InvalidRequestError
-
 
 from user import Base, User
 
@@ -44,12 +43,7 @@ class DB:
         return user
 
     def find_user_by(self, **kwargs) -> User:
-        """a method that query the database
-            Kwargs: keyword argument to be queried in the DB
-            raise NoResultFound error if no user found
-            raise InvalidRequestError if invalid query request
-            returns user if found
-        """
+        """ finds a user by an arbitary keyword argument """
         if not kwargs:
             raise InvalidRequestError
         valid_attrs = ['id', 'email',
@@ -64,21 +58,18 @@ class DB:
             raise NoResultFound
 
     def update_user(self, user_id: int, **kwargs) -> None:
-        """
-            a method that update a user
-            finds the user by id with the find_user_by method
-            loops through the key word arg to be update
-            updates and commit
-            raise value error if arg does not correspond with
-            user attribute
-        """
-        try:
-            user = self.find_user_by(id=user_id)
-
-            for key, value in kwargs.items():
-                if hasattr(user, key):
-                    setattr(user, key, value)
-            self._session.commit()
-
-        except ValueError:
-            raise ValueError('Error')
+        """ updates a user """
+        if not kwargs:
+            raise ValueError
+        user = self.find_user_by(id=user_id)
+        if user:
+            valid_attrs = ['id', 'email',
+                           'hashed_password',
+                           'session_id', 'reset_token']
+            for key, val in kwargs.items():
+                if key not in valid_attrs:
+                    raise ValueError
+                setattr(user, key, val)
+        self._session.add(user)
+        self._session.commit()
+        

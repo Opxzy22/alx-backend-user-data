@@ -60,7 +60,7 @@ class DB:
             return self._session.query(User).filter_by(**kwargs).one()
         except Exception:
             raise NoResultFound
-        
+
     def update_user(self, user_id: int, **kwargs) -> None:
         """
             a method that update a user

@@ -47,15 +47,18 @@ class DB:
             raise InvalidRequestError if invalid query request
             returns user if found
         """
-        user = self._session.query(User).filter_by(**kwargs).first()
+        if not kwargs:
+            raise InvalidRequestError
+        valid_attrs = ['id', 'email',
+                       'hashed_password',
+                       'session_id', 'reset_token']
+        for key in kwargs.keys():
+            if key not in valid_attrs:
+                raise InvalidRequestError
         try:
-            if user is None:
-                raise NoResultFound('no result found')
-        except InvalidRequestError:
-            raise InvalidRequestError('invalid')
-
-        return user
-
+            return self._session.query(User).filter_by(**kwargs).one()
+        except Exception:
+            raise NoResultFound
     def update_user(self, user_id: int, **kwargs) -> None:
         """
             a method that update a user
